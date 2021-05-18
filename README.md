@@ -1,1 +1,1 @@
-# ansible-playbook-redis
+# ansible-redis
