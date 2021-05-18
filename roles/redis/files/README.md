@@ -1,0 +1,1 @@
+redis-benchmark  redis-cli  redis-server

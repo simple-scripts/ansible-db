@@ -1,0 +1,76 @@
+---
+# tasks file for redis
+- name: create redis directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "/usr/local/redis/bin"
+    - "/usr/local/redis/conf"
+    - "/usr/local/redis/data"
+
+- name: copy redis binary file to dest
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/redis/bin/
+    mode: 0755
+  with_items:
+    - redis-server
+    - redis-cli
+    - redis-benchmark
+
+- name: link command
+  command: ln -sv redis-server "{{ item }}"
+  args:
+    chdir: /usr/local/redis/bin
+  with_items:
+    - redis-check-aof
+    - redis-check-rdb
+    - redis-sentinel
+  ignore_errors: yes
+
+- name: ensure {{ PORT }} directory exist
+  file:
+    path: /usr/local/redis/data/{{ PORT }}
+    state: directory
+
+- name: copy {{ PORT }}.conf to dest
+  template:
+    src: redis.conf.j2
+    dest: /usr/local/redis/conf/{{ PORT }}.conf
+  notify: 
+    restart redis
+
+- name: copy redis_{{ PORT }} init to dest
+  template:
+    src: redis.j2
+    dest: /etc/init.d/redis_{{ PORT }}
+    mode: 0755
+
+- name: export REDIS_HOME and add to PATH
+  become: yes
+  template:
+    src: redis.sh.j2
+    dest: /etc/profile.d/redis.sh
+    owner: root
+    group: root
+    mode: 'u=rw,go=r'
+
+- name: start redis_{{ PORT }}
+  service:
+    name: redis_{{ PORT }}
+    state: started
+    enabled: yes
+
+- name: copy sentinel.conf to dest
+  template:
+    src: sentinel.conf.j2
+    dest: /usr/local/redis/conf/redis-sentinel-{{ SENTINEL_PORT }}.conf
+  when: REDIS_SENTINEL == True
+
+- name: start sentinel
+  shell: nohup /usr/local/redis/bin/redis-sentinel /usr/local/redis/conf/redis-sentinel-{{ SENTINEL_PORT }}.conf 2>&1 & 
+  args:
+    chdir: /usr/local/redis/
+  when: REDIS_SENTINEL == True
