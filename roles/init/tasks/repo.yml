@@ -3,6 +3,10 @@
   package: name=epel-release state=present
   when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
 
+- name: copy aliyun repo for CentOS 7
+  template: src=centos7_aliyun.j2 dest=/etc/yum.repos.d/CentOS-7.repo
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+  
 #- name: update repo sources.list for ubuntu 18.04
 #  copy:
 #    src: sources.list.18.04
