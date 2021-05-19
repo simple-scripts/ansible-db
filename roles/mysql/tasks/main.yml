@@ -18,10 +18,10 @@
     create_home: no
     #append: yes
 
-#- name: Extract mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz into /usr/local/mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64
-#  ansible.builtin.unarchive:
-#    src: mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz
-#    dest: /usr/local/
+- name: Extract mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz into /usr/local/mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64
+  ansible.builtin.unarchive:
+    src: mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz
+    dest: /usr/local/
 
 - name: Change direcitory ownership and group
   ansible.builtin.file:
