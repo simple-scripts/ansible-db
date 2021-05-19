@@ -45,3 +45,6 @@
 192.168.1.1 ansible_ssh_pass='123456' REDIS_REPLICATION=False
 192.168.1.2 ansible_ssh_pass='123456' REDIS_REPLICATION=True
 192.168.1.3 ansible_ssh_pass='123456' REDIS_REPLICATION=True
+
+[mysql]
+192.168.1.4 ansible_ssh_pass='123456'
