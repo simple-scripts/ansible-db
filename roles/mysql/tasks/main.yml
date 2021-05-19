@@ -1,0 +1,86 @@
+---
+# tasks file for mysql
+- name: Installation dependency
+  yum:
+    name: libaio-devel
+    state: latest
+
+- name: Ensure group "mysql" exists
+  ansible.builtin.group:
+    name: mysql
+    state: present
+
+- name: Add the user 'mysql' with a primary group of 'mysql'
+  ansible.builtin.user:
+    name: mysql
+    shell: /sbin/nologin
+    group: mysql
+    create_home: no
+    #append: yes
+
+#- name: Extract mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz into /usr/local/mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64
+#  ansible.builtin.unarchive:
+#    src: mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64.tar.gz
+#    dest: /usr/local/
+
+- name: Change direcitory ownership and group
+  ansible.builtin.file:
+    path: /usr/local/mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64
+    owner: mysql
+    group: mysql
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/local/mysql-{{ MYSQL_VERSION }}-linux-glibc2.12-x86_64
+    dest: /usr/local/mysql
+    owner: mysql
+    group: mysql
+    state: link
+
+- name: Create mysql data directory if it does not exist
+  ansible.builtin.file:
+    path: /data/mysql{{ MYSQL_PORT }}/{{ item }}
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: '0755'
+  with_items:
+    - data
+    - logs
+    - tmp
+
+- name: Template a file to /etc/my.cnf
+  ansible.builtin.template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: initialize mysql
+  shell: ./bin/mysqld --initialize-insecure
+  args:
+    chdir: /usr/local/mysql
+
+- name: export MYSQL_HOME and add to PATH
+  become: yes
+  template:
+    src: mysql.sh.j2
+    dest: /etc/profile.d/mysql.sh
+    owner: root
+    group: root
+    mode: 'u=rw,go=r'
+
+- name: Copy a "mysql" file on the remote machine for editing
+  ansible.builtin.copy:
+    src: /usr/local/mysql/support-files/mysql.server
+    dest: /etc/init.d/mysql
+    mode: '0755'
+    remote_src: yes
+
+- name: Start service mysql, if not started
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: no

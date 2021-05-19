@@ -1,0 +1,7 @@
+---
+# vars file for mysql
+MYSQL_VERSION: "5.7.34"
+MYSQL_PORT: 3306
+MYSQL_HOSTNAME: "{{ ansible_fqdn }}"
+MYSQL_SERVER_ID: "{{ ansible_default_ipv4.address.split('.')[3] }}"
+MYSQL_MEM_NUM: "{{ (ansible_memtotal_mb*0.8)|int }}"
