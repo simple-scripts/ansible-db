@@ -1,0 +1,15 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - {{ APP_LOG_SRC }}
+    fields:
+      log_topics: {{ APP_NAME }}
+      service: {{ SERVICE }}
+
+output.logstash:
+  hosts: ["192.168.0.126:5044"]
+  topic: '%{[fields][log_topics]}'
+  enabled: true
+  compression: gzip
+  max_message_bytes: 100000

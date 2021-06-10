@@ -1,0 +1,5 @@
+---
+- name: Set a hostname
+  ansible.builtin.hostname:
+#    name: test-welfare-app-1-243
+    name: "{{ ENV }}-{{ PROJECT_NAME }}-{{ ROLE }}-{{ ansible_default_ipv4.address.split('.')[2] }}-{{ ansible_default_ipv4.address.split('.')[3] }}"

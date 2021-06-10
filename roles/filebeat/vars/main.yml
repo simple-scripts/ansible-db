@@ -1,0 +1,6 @@
+---
+# vars file for filebeat
+FILEBEAT_VERSION: "7.5.0"
+APP_LOG_SRC: "/opt/project/welfare/enterprise-welfare-applet/enterprise-welfare-applet.log"
+APP_NAME: "enterprise-welfare-applet"
+SERVICE: "test-logs"

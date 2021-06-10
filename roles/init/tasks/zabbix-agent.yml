@@ -9,6 +9,7 @@
 - name: install zabbix-agent repo for CentOS 7
   shell: rpm -i /tmp/zabbix-release-5.2-1.el7.noarch.rpm
   when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+  ignore_errors: yes
 
 - name: install zabbix-agent repo for Ubuntu 18.04
   shell: dpkg -i /tmp/zabbix-release_3.4-1+bionic_all.deb 
@@ -29,27 +30,27 @@
 
 #- name: install zabbix-api
 #  pip: name=zabbix-api
-  
-- name: add zabbix hosts
-  local_action:
-    module: zabbix_host
-    server_url: http://192.168.1.254:8080
-    login_user: Admin
-    login_password: 123456
-    host_name: '{{inventory_hostname}}'
-    visible_name: '{{ansible_fqdn.split("-")[0]}}-{{ansible_fqdn.split("-")[1]}}-{{ansible_fqdn.split("-")[2]}}_{{inventory_hostname}}'
-    host_groups:
-      - node
-    link_templates:
-      - Linux by Zabbix agent
-    status: enabled
-    state: present
-    interfaces:
-    - type: 1
-      main: 1
-      useip: 1
-      ip: '{{inventory_hostname}}'
-      dns: ""
-      port: 10050
-  tags:
-  - set_hosts
+#  
+#- name: add zabbix hosts
+#  local_action:
+#    module: zabbix_host
+#    server_url: http://192.168.11.211:28080
+#    login_user: Admin
+#    login_password: K9kkQ54aFdyHAENLocGE
+#    host_name: '{{inventory_hostname}}'
+#    visible_name: '{{ansible_fqdn.split("-")[0]}}-{{ansible_fqdn.split("-")[1]}}-{{ansible_fqdn.split("-")[2]}}_{{inventory_hostname}}'
+#    host_groups:
+#      - store_saas
+#    link_templates:
+#      - Linux by Zabbix agent
+#    status: enabled
+#    state: present
+#    interfaces:
+#    - type: 1
+#      main: 1
+#      useip: 1
+#      ip: '{{inventory_hostname}}'
+#      dns: ""
+#      port: 10050
+#  tags:
+#  - set_hosts

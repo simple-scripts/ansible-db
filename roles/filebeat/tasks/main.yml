@@ -1,0 +1,27 @@
+---
+# tasks file for filebeat
+- name: Copy filebeat-{{ FILEBEAT_VERSION}}-x86_64.rpm to dest 
+  ansible.builtin.copy:
+    src: filebeat-{{ FILEBEAT_VERSION}}-x86_64.rpm
+    dest: /tmp/filebeat-{{ FILEBEAT_VERSION}}-x86_64.rpm
+
+- name: Install filebeat-{{ FILEBEAT_VERSION}}-x86_64.rpm package
+  yum:
+     name: /tmp/filebeat-{{ FILEBEAT_VERSION}}-x86_64.rpm
+     state: present
+
+- name: Template filebeat.yml to /etc/filebeat/filebeat.yml
+  ansible.builtin.template:
+    src: filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart filebeat
+
+- name: Make sure filebeat service unit is running
+  ansible.builtin.systemd:
+    name: filebeat
+    state: started

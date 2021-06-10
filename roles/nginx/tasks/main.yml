@@ -1,0 +1,152 @@
+---
+# tasks file for nginx
+#- name: Download nginx-{{ NGINX_VERSION }}.tar.gz
+#  get_url:
+#    url: http://nginx.org/download/nginx-{{ NGINX_VERSION }}.tar.gz
+#    dest: /tmp/
+
+- name: Unarchive nginx-{{ NGINX_VERSION }}.tar.gz that needs to be downloaded
+  ansible.builtin.unarchive:
+    src: http://nginx.org/download/nginx-{{ NGINX_VERSION }}.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Ensure group "nginx" exists
+  ansible.builtin.group:
+    name: nginx
+    state: present
+
+- name: Add the user 'nginx' with a primary group of 'nginx'
+  ansible.builtin.user:
+    name: nginx
+    shell: /sbin/nologin
+    group: nginx
+    create_home: no
+    #append: yes
+
+- name: Install a list of nginx dependent packages with a list variable
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - pcre-devel
+    - openssl-devel
+    - gcc
+
+- name: Get stats of the nginx object
+  ansible.builtin.stat:
+    path: /usr/local/nginx
+  register: result
+
+- name: judge nginx directory exist
+  fail:
+    msg: "directory nginx exists"
+  when: result.stat.isdir is defined and result.stat.isdir
+
+- name: configure nginx
+  shell: ./configure --user=nginx --group=nginx --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_gzip_static_module --with-pcre --with-ipv6 --with-stream
+  args:
+    chdir: /tmp/nginx-{{ NGINX_VERSION }}
+
+- name: make nginx
+  shell: make
+  args:
+    chdir: /tmp/nginx-{{ NGINX_VERSION }}
+
+- name: make install nginx
+  shell: make install
+  args:
+    chdir: /tmp/nginx-{{ NGINX_VERSION }}
+
+- name: remove /tmp/nginx-{{ NGINX_VERSION }}
+  ansible.builtin.file:
+    path: /tmp/nginx-{{ NGINX_VERSION }}
+    state: absent
+
+- name: Recursively change ownership of nginx-{{ NGINX_VERSION }}
+  ansible.builtin.file:
+    path: /usr/local/nginx
+    state: directory
+    recurse: yes
+    owner: nginx
+    group: nginx
+
+- name: Template a file to /usr/local/nginx/conf/nginx.conf
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /usr/local/nginx/conf/nginx.conf
+    owner: nginx
+    group: nginx
+    backup: yes
+  notify:
+    - restart nginx
+
+- name: Template a file to /lib/systemd/system/nginx.service
+  ansible.builtin.template:
+    src: nginx.service.j2
+    dest: /lib/systemd/system/nginx.service
+    mode: "0755"
+
+- name: export NGINX_HOME and add to PATH
+  become: yes
+  template:
+    src: nginx.sh.j2
+    dest: /etc/profile.d/nginx.sh
+    owner: root
+    group: root
+    mode: 'u=rw,go=r'
+
+- name: Create nginx vhost and cert directory if it does not exist
+  ansible.builtin.file:
+    path: /usr/local/nginx/conf/{{ item }}
+    state: directory
+    owner: nginx
+    group: nginx
+  with_items:
+    - vhost
+    - cert
+
+- name: Create nginx log directory if it does not exist
+  ansible.builtin.file:
+    path: /var/log/nginx
+    state: directory
+
+- name: Make sure a service unit is running
+  ansible.builtin.systemd:
+    state: started
+    name: nginx
+
+- name: Template a file to /usr/local/nginx/conf/vhost/{{ DOMAIN }}.conf
+  ansible.builtin.template:
+    src: proxy.conf.j2
+    dest: /usr/local/nginx/conf/vhost/{{ DOMAIN }}.conf
+    owner: nginx
+    group: nginx
+    #backup: yes
+  notify:
+    - restart nginx
+
+- name: Get stats of the {{ DOMAIN }}.pem and {{ DOMAIN }}.crt object
+  ansible.builtin.stat:
+    path: /usr/local/nginx/conf/cert/{{ DOMAIN }}.pem
+  register: file_status
+
+- name: Template a file to /usr/local/nginx/conf/vhost/{{ DOMAIN }}.conf
+  ansible.builtin.template:
+    src: https-proxy.conf.j2
+    dest: /usr/local/nginx/conf/vhost/{{ DOMAIN }}.conf
+    owner: nginx
+    group: nginx
+    #backup: yes
+  notify:
+    - restart nginx
+  when: file_status.stat.exists == True
+
+- name: Recursively change ownership of nginx-{{ NGINX_VERSION }}
+  ansible.builtin.file:
+    path: /usr/local/nginx-{{ NGINX_VERSION }}/
+    state: directory
+    recurse: yes
+    owner: nginx
+    group: nginx
+

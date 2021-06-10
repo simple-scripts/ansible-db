@@ -1,62 +1,62 @@
 - name: install Development Tools
   package: name={{ item }} state=present
   with_items:
-    - autoconf
-    - automake
+#    - autoconf
+#    - automake
     - bc
-    - bzip2
-    - bzip2-devel
-    - bison
-    - cmake
-    - crontabs
+#    - bzip2
+#    - bzip2-devel
+#    - bison
+#    - cmake
+#    - crontabs
     - dstat
-    - freetype-devel
-    - fuse
-    - fuse-devel
-    - fuse-libs
-    - gcc
-    - gcc-c++
-    - gd-devel
-    - gdb
-    - GeoIP
-    - GeoIP-devel
-    - glib2
-    - glib2-devel
-    - graphviz
-    - graphviz-devel
-    - hiredis
-    - hiredis-devel
-    - libcurl
-    - libcurl-devel
-    - libevent-devel
-    - libjpeg-turbo
-    - libjpeg-turbo-devel
-    - libpng-static
-    - libmcrypt
-    - libmcrypt-devel
-    - libtidy
-    - libtidy-devel
-    - libxml2
-    - libxml2-devel
-    - logwatch
-    - make
-    - man-db
-    - mhash
-    - mhash-devel
-    - ncurses
-    - ncurses-devel
+#    - freetype-devel
+#    - fuse
+#    - fuse-devel
+#    - fuse-libs
+#    - gcc
+#    - gcc-c++
+#    - gd-devel
+#    - gdb
+#    - GeoIP
+#    - GeoIP-devel
+#    - glib2
+#    - glib2-devel
+#    - graphviz
+#    - graphviz-devel
+#    - hiredis
+#    - hiredis-devel
+#    - libcurl
+#    - libcurl-devel
+#    - libevent-devel
+#    - libjpeg-turbo
+#    - libjpeg-turbo-devel
+#    - libpng-static
+#    - libmcrypt
+#    - libmcrypt-devel
+#    - libtidy
+#    - libtidy-devel
+#    - libxml2
+#    - libxml2-devel
+#    - logwatch
+#    - make
+#    - man-db
+#    - mhash
+#    - mhash-devel
+#    - ncurses
+#    - ncurses-devel
     - net-tools
     - ntsysv
-    - numactl
-    - openldap-devel
-    - openssh-clients
-    - openssl-devel
-    - pcre-devel
-    - readline-devel
+#    - numactl
+#    - openldap-devel
+#    - openssh-clients
+#    - openssl-devel
+#    - pcre-devel
+#    - readline-devel
     - ntpdate
     - screen 
-    - sendmail 
-    - setuptool 
+#    - sendmail 
+#    - setuptool 
     - unzip 
     - vim-common 
     - vim-enhanced 
@@ -66,21 +66,21 @@
     - nload 
     - lrzsz 
     - iotop 
-    - dmidecode 
+#    - dmidecode 
     - tree 
     - telnet 
-    - ImageMagick-devel 
-    - zlib-devel 
-    - rpcbind 
-    - nfs-utils 
-    - python-setuptools 
-    - python-devel
-    - git
+#    - ImageMagick-devel 
+#    - zlib-devel 
+#    - rpcbind 
+#    - nfs-utils 
+#    - python-setuptools 
+#    - python-devel
+#    - git
     - iftop
     - traceroute
     - bind-utils
     - strace
-    - mlocate
+#    - mlocate
     - sysstat
     - man
     - tcpdump

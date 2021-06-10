@@ -1,5 +1,6 @@
 ---
 # tasks file for base
+- include: hostname.yml
 - include: dns.yml
 - include: repo.yml
 - include: pkg.yml

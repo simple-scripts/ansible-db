@@ -7,7 +7,7 @@
     name: systemd-resolved
     state: restarted
 
-- name: restart zabbix-agent
+- name: restart zabbix-agent2
   service: 
-    name: zabbix-agent
+    name: zabbix-agent2
     state: restarted

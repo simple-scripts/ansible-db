@@ -1,4 +1,9 @@
 ntp_server: time.nist.gov
 dns1: 8.8.8.8
 dns2: 1.1.1.1
-zabbix_server_ip: 192.168.1.67
+zabbix_server_ip: 192.168.0.126
+
+# change hostname
+ENV: dev
+PROJECT_NAME: dzl
+ROLE: db

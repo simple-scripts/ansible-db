@@ -1,15 +1,16 @@
 ---
 # vars file for redis
-IP: "{{ ansible_default_ipv4.address }}"
+#IP: "{{ ansible_default_ipv4.address }}"
+IP: "127.0.0.1"
 PORT: 6379
-PASSWORD: "123456"
+PASSWORD: "5200Yome"
 
-#REDIS_REPLICATION: False
-MASTER_IP: "192.168.1.1"
+REDIS_REPLICATION: False
+MASTER_IP: "172.17.14.189"
 MASTER_PORT: 6379
-MASTER_PASSWORD: "123456"
+MASTER_PASSWORD: "5200Yome"
 
-REDIS_SENTINEL: True
+REDIS_SENTINEL: False
 SENTINEL_PORT: 26379
 
-REDIS_CLUSTER: True
+REDIS_CLUSTER: False

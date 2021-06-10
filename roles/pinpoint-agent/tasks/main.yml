@@ -1,0 +1,18 @@
+---
+# tasks file for pinpoint
+- name: Extract pinpoint-agent-{{ VERSION }}.tar.gz into /data/pinpoint-agent-{{ VERSION }}
+  ansible.builtin.unarchive:
+    src: pinpoint-agent-{{ VERSION }}.tar.gz
+    dest: /data/
+
+- name: modify pinpoint server ip
+  lineinfile:
+    path: /data/pinpoint-agent-{{ VERSION }}/profiles/release/pinpoint.config
+    regex: '^profiler.transport.grpc.collector.ip='
+    line: 'profiler.transport.grpc.collector.ip={{ PINPOINT_SERVER }}'
+
+- name: modify pinpoint server ip
+  lineinfile:
+    path: /data/pinpoint-agent-{{ VERSION }}/profiles/release/pinpoint.config
+    regex: '^profiler.collector.ip='
+    line: 'profiler.collector.ip={{ PINPOINT_SERVER }}'

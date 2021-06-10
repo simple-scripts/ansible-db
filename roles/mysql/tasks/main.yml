@@ -80,7 +80,19 @@
     remote_src: yes
 
 - name: Start service mysql, if not started
-  ansible.builtin.service:
-    name: mysql
-    state: started
-    enabled: no
+  service:
+    name=mysql
+    state=started
+    enabled=yes
+
+- name: Install the percona rpm from a remote repo
+  yum:
+    name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+    state: present
+
+- name: Install percona list of packages
+  yum:
+    name:
+      - percona-xtrabackup-24
+      - percona-toolkit
+    state: present
